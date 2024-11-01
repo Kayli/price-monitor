@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  init:
+    build:
+      context: ..
+      dockerfile: infrastructure/Dockerfile
+    command: ["poetry", "run", "python", "-m", "src.services.init.main"]
+    depends_on:
+      - redis
+
+  monitor:
+    build:
+      context: ..
+      dockerfile: infrastructure/Dockerfile
+    command: ["poetry", "run", "python", "-m", "src.services.monitor.main"]
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      fake-products:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      replicas: 1
+
+  dashboard:
+    build:
+      context: ..
+      dockerfile: infrastructure/Dockerfile
+    command: ["poetry", "run", "python", "-m", "src.services.dashboard.main"]
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  fake-products:
+    build:
+      context: ..
+      dockerfile: infrastructure/Dockerfile
+    ports:
+      - "5000:5000"
+    # use asgi-compatible production server
+    command: ["poetry", "run", "hypercorn", "--workers", "1", "-b", "0.0.0.0:5000", "src.services.fake_products.main:app"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://fake-products:5000/check-ready"]
+      start_period: 1s    # grace period before the health checks begin, giving the service time to start up
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 10s

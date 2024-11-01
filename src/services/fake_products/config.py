@@ -1,0 +1,2 @@
+class Blabla:
+    pass
