@@ -54,3 +54,10 @@ poetry run pytest
 - Factory: encapsulates creation of the application components following a factory design pattern. Performs dependency injection.
 - Logger: encapsulates structural logger component interface and its configuration
 - Repository: encapsulates interactions and configuration of cache storage used for caching product ids that we have to monitor. Contains distributed locking logic that enables monitoring of multiple product prices in a horizontally scalable manner.
+
+
+## Known problems
+
+- if any error occurs during remote api call
+    - monitor component will discard the whole batch of async requests, which is somewhat wasteful
+    - monitor component will retry to update price again and again until it succeeds, so there is no protection against 'poisoned' product urls
