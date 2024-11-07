@@ -22,7 +22,6 @@ class Logger:
         self.logger = structlog.get_logger()
         logging.getLogger("httpx").setLevel(logging.WARNING)
 
-
     def debug(self, message, **kwargs):
         self.logger.debug(message, **kwargs)
 

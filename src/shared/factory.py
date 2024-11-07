@@ -23,9 +23,9 @@ class Factory:
         config = Config()
         logger = Logger(config)
         return Monitor(
-            config = config, 
-            repository=Repository(config), 
-            client=ProductsClient(config, logger), 
-            bus=Bus(config), 
+            config=config,
+            repository=Repository(config),
+            client=ProductsClient(config, logger),
+            bus=Bus(config),
             logger=logger
         )

@@ -3,6 +3,7 @@ import asyncio
 
 from quart import Quart, jsonify, make_response
 
+
 app = Quart(__name__)
 
 
@@ -26,7 +27,7 @@ async def check_ready():
 @app.route('/products/<product_id>', methods=['GET'])
 async def get_product(product_id):
     product = generate_fake_product(product_id)
-    await asyncio.sleep(random.uniform(0.2, 1.0)) # simulate processing delay
+    await asyncio.sleep(random.uniform(0.2, 1.0))  # simulate processing delay
     return jsonify(product)
 
 

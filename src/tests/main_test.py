@@ -1,7 +1,7 @@
 import asyncio
 from unittest.mock import AsyncMock
 
-from ..services.monitor.monitor import Monitor, MonitorState
+from ..services.monitor.monitor import MonitorState
 from .fake_factory import FakeFactory
 
 
@@ -18,7 +18,7 @@ def test_start_initializes_monitor():
 
 def test_stop_stops_monitor():
     with create_monitor() as monitor:
-        monitor.start() 
+        monitor.start()
         monitor.stop()
         assert monitor._state == MonitorState.STOPPED
 

@@ -16,16 +16,14 @@ class Repository:
         self.products_key = "products:last_updated"
         self.lock_key_prefix = "lock:product:"
 
-
     def seed_products(self, target_count: int):
         # Initialize products with a timestamp of 0 (Unix epoch start time)
         initial_timestamp = 0
-        
+
         with self.redis.pipeline() as pipe:
             for product_id in range(1, target_count + 1):
                 pipe.zadd(self.products_key, {product_id: initial_timestamp})
             pipe.execute()
-
 
     def lock_least_updated_products_old(self, count: int) -> list[int]:
         # Retrieve the least recently updated products and lock them
@@ -40,7 +38,6 @@ class Repository:
                 locked_products.append(int(product_id))
 
         return locked_products
-
 
     def lock_least_updated_products(self, count: int) -> list[int]:
         # Lua script to select and lock least updated products
@@ -67,7 +64,7 @@ class Repository:
                 end
             end
         end
-        
+
         return locked_products
         """
 
@@ -76,11 +73,10 @@ class Repository:
 
         return [int(product_id) for product_id in locked_product_ids]
 
-
     def update_unlock_products(self, product_ids: list[int]):
         '''Unlock products updating last access time'''
         current_time = int(time.time())  # Get current Unix timestamp in seconds
-        
+
         with self.redis.pipeline() as pipe:
             for product_id in product_ids:
                 # Update the timestamp for each product
@@ -88,7 +84,6 @@ class Repository:
                 # Remove the lock after updating
                 pipe.delete(f"{self.lock_key_prefix}{product_id}")
             pipe.execute()
-
 
     def unlock_products(self, product_ids: list[int]):
         # Unlock the products without updating their last access time

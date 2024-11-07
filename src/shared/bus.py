@@ -16,14 +16,12 @@ class Bus:
         )
         self.price_channel = "price_updates"
 
-
     def publish_product_prices(self, products: list[ProductData]):
         # Convert the list of prices to a JSON string
         products_json = json.dumps([product.model_dump_json() for product in products], indent=2)
-        
+
         # Publish the JSON string to the price_updates channel
         self.redis.publish(self.price_channel, products_json)
-
 
     def subscribe_to_prices(self):
         pubsub = self.redis.pubsub()

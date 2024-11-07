@@ -3,7 +3,6 @@ import threading
 import signal
 import asyncio
 from ...shared.factory import Factory
-from ...shared.bus import Bus
 
 
 def subscribe_and_update(bus, update_count, lock):
@@ -22,12 +21,12 @@ def signal_handler(sig, frame):
 
 async def main():
     signal.signal(signal.SIGTERM, signal_handler)
-    
+
     bus = Factory().create_bus()
 
     print("dashboard service started!", flush=True)
 
-    update_count = [0] 
+    update_count = [0]
     lock = threading.Lock()  # Lock to ensure thread-safe access to update_count
 
     # Start a separate thread for subscribing to price updates
@@ -45,4 +44,3 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
-
