@@ -13,18 +13,22 @@ Price Monitor is a Python-based tool designed to track and monitor product price
 
 ## Getting Started
 
+### Prerequesites
+
+Make sure git, docker-compose and poetry are installed.
+
+### Instructrions
+
 Clone repository
 ```bash
 git clone https://github.com/Kayli/price-monitor.git
+cd price-monitor
 ```
-Make sure docker is installed.
 
 Run project using docker-compose orchestrator
 ```bash
-cd infrastructure
-docker compose up
+docker compose -f infrastructure/docker-compose.yml up
 ```
-Make sure poetry is installed.
 
 Run tests
 ```bash
@@ -56,13 +60,33 @@ poetry run pytest
 - Repository: encapsulates interactions and configuration of cache storage used for caching product ids that we have to monitor. Contains distributed locking logic that enables monitoring of multiple product prices in a horizontally scalable manner.
 
 
+## How to run in a cloud environment
+
+To run the application in a cloud environment using Kubernetes:
+
+- Choose a Cloud Provider: Use a Kubernetes-supported cloud service (e.g., Google Kubernetes Engine (GKE), Amazon EKS, or Azure AKS).
+
+- Set Up Docker Registry: Push your Docker images to a container registry (e.g., Docker Hub, AWS ECR, or Google Container Registry).
+
+- Provision Kubernetes Cluster: Create a Kubernetes cluster on your cloud provider, configuring node pools, networking, and storage as needed.
+
+- Convert Docker Compose to Kubernetes Manifests: Use tools like kompose to convert your Docker Compose files to Kubernetes YAML manifests, or manually create Deployment, Service, and ConfigMap/Secret files.
+
+- Deploy to Cluster: Use kubectl apply to deploy your Kubernetes manifests to the cluster.
+
+- Configure Environment Variables and Secrets: Define environment variables and store sensitive data in Kubernetes Secrets.
+
+- Expose and Monitor: Set up Services and Ingress for public access, configure scaling and monitoring through Kubernetes tools or your cloud provider.
+
+This will deploy your Docker Compose stack as a Kubernetes application in the cloud.
+
 ## Known problems
 
-- if any error occurs during remote api call
+- If any error occurs during remote api call
     - monitor component will discard the whole batch of async requests, which is somewhat wasteful
     - monitor component will retry to update price again and again until it succeeds, so there is no protection against 'poisoned' product urls
-- only monitor is covered with unit tests, but there are no automated integration tests for the application
-- there is no coverage metrics collected during tests run
-- there is no automated performance testing implemented
-- there is no automated security scanning implemented
-- there is no ci/cd pipeline configured for github repository
+- Only monitor is covered with unit tests, but there are no automated integration tests for the application
+- There is no coverage metrics collected during tests run
+- There is no automated performance testing implemented
+- There is no automated security scanning implemented
+- There is no ci/cd pipeline configured for github repository
