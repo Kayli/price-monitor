@@ -48,6 +48,7 @@ poetry run pytest
 
 ### Shared modules/classes
 
+- ProductsClient: encapsulates API interactions with fake_products service
 - Bus: encapsulates message bus functionality implemented by redis
 - Config: encapsulates application configuration that, which values can be overriden by environment variables
 - Factory: encapsulates creation of the application components following a factory design pattern. Performs dependency injection.
