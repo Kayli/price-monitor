@@ -24,14 +24,18 @@ class Monitor:
             client: ProductsClient,
             bus: Bus,
             logger: Logger):
-        self.config = config
-        self.repository = repository
-        self.client = client
-        self.bus = bus
-        self.logger = logger
+        self._config = config
+        self._repository = repository
+        self._client = client
+        self._bus = bus
+        self._logger = logger
         self._thread = None
         self._stop_flag = False
         self._state = MonitorState.STOPPED
+
+    @property
+    def state(self):
+        return self._state
 
     def start(self, wait=False):
         self._thread = threading.Thread(target=self._update_prices_async)
@@ -50,26 +54,26 @@ class Monitor:
         asyncio.run(self._update_prices())
 
     async def _update_prices(self):
-        self.logger.info("monitor service started")
+        self._logger.info("monitor service started")
 
         while not self._stop_flag:
             await self._process_batch()
 
-        self.logger.info("monitor service stopped")
+        self._logger.info("monitor service stopped")
 
     async def _process_batch(self):
         try:
-            self.logger.debug("start processing new batch ...")
-            product_ids = self.repository.lock_least_updated_products(self.config.batch_size)
-            products = await self.client.get_products_data(product_ids)
-            self.bus.publish_product_prices(products)
-            self.repository.update_unlock_products(product_ids)
-            self.logger.debug(f"finished processing batch of {len(product_ids)} products")
+            self._logger.debug("start processing new batch ...")
+            product_ids = self._repository.lock_least_updated_products(self._config.batch_size)
+            products = await self._client.get_products_data(product_ids)
+            self._bus.publish_product_prices(products)
+            self._repository.update_unlock_products(product_ids)
+            self._logger.debug(f"finished processing batch of {len(product_ids)} products")
 
         except Exception:
             ## on error, unlocks products without updating last access time
-            self.repository.unlock_products(product_ids)
-            self.logger.exception('unexpected error occured while processing batch of products', product_ids)
+            self._repository.unlock_products(product_ids)
+            self._logger.exception('unexpected error occured while processing batch of products', product_ids)
 
     def __enter__(self):
         return self

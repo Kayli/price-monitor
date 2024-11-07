@@ -61,3 +61,8 @@ poetry run pytest
 - if any error occurs during remote api call
     - monitor component will discard the whole batch of async requests, which is somewhat wasteful
     - monitor component will retry to update price again and again until it succeeds, so there is no protection against 'poisoned' product urls
+- only monitor is covered with unit tests, but there are no automated integration tests for the application
+- there is no coverage metrics collected during tests run
+- there is no automated performance testing implemented
+- there is no automated security scanning implemented
+- there is no ci/cd pipeline configured for github repository
