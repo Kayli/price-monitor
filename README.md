@@ -15,10 +15,15 @@ Clone repository
 ```bash
 git clone https://github.com/Kayli/price-monitor.git
 ```
+Make sure docker is installed.
+
 Run project using docker-compose orchestrator
 ```bash
+cd infrastructure
 docker compose up
 ```
+Make sure poetry is installed.
+
 Run tests
 ```bash
 poetry install --with dev
