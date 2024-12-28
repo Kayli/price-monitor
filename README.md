@@ -2,6 +2,9 @@
 
 Price Monitor is a Python-based tool designed to track and monitor product prices from various e-commerce websites. The application allows users to receive alerts whenever the price of an item drops below a specified threshold, making it an ideal solution for users looking to save money on online purchases.
 
+## Warning
+
+This is a code for a time-boxed implementation of a take-at-home test project!
 
 ## Features
 
